@@ -1,0 +1,109 @@
+
+#   # In memory storage
+# MESSAGES = {};
+
+# @app.route("/")
+# def index():
+#     return "Index Page";
+
+
+
+# def do_the_login():
+#     return 'I am logging in'
+
+
+# def show_login_form():
+#     return 'This is the login form'
+
+
+# @app.route("/login", methods = ['GET', 'POST'])
+# # def login():
+# #        error           = None
+# #     if request.method == 'POST'       :
+# #     if valid_login(request.form(user)):
+
+
+# #     else:
+# #         return show_login_form;
+
+
+
+# @app.route("/hello12")
+# def hello():
+#     return "Hello there buddy";
+
+# @app.route("/message/")
+# def message():
+#     return 'This is the first message'
+
+
+# @app.route("/you/there")
+# def you():
+#     return "Testing Kelvin's Mic 1, 2"
+
+
+
+
+
+
+# import requests
+
+# api_url = "https://jsonplaceholder.typicode.com/todos/1"
+
+# response = requests.get(api_url)
+# kay      = response.json()
+
+# print(kay)
+
+
+# todo = {
+#     'userId'   : 1,
+#     'title'    : "Buy milk",
+#     'completed': False
+# }
+
+# api_url  = "https://jsonplaceholder.typicode.com/todos"
+# response = requests.post(api_url)
+# results  = response.json()
+#   # print(response.status_code)
+
+
+# api_url1  = "https://jsonplaceholder.typicode.com/todos/10"
+# response = requests.get(api_url1)
+# print(response.json())
+
+# todo = {
+#     'userId'   : 1,
+#     'title'    : 'Wash car',
+#     'completed': True,
+
+# }
+# response = requests.put(api_url1, json=todo)
+# print(response.json())
+
+
+# # class User(db.model):
+#       # id = db.users
+
+
+
+# @app.route('/api/register', methods= ['POST'])
+# def registerUser():
+#     data     = requests.get_json()
+#     username = data.get(username)
+#     password = data.get(password)
+
+#     if not username or not password:
+#           return jsonify({'message': 'Missing fields'}), 400
+
+#     return 'Create user'
+
+
+# @app.get('/users')
+# def users():
+#     return 'List of users'
+
+
+# @app.route('/api/signin', methods = ['GET'])
+# def signin():
+#     return 'Sign in user'
