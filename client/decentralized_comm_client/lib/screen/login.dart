@@ -1,5 +1,8 @@
 import 'package:decentralized_comm_client/screen/chats.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
+
+import '../services/api.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -9,8 +12,6 @@ class LoginScreen extends StatefulWidget {
 }
 
 class _LoginScreenState extends State<LoginScreen> {
-  late final String username;
-  late final String password;
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
@@ -23,6 +24,7 @@ class _LoginScreenState extends State<LoginScreen> {
     return TextFormField(
       controller: controller,
       obscureText: obscureText,
+
       decoration: InputDecoration(label: Text(label)),
       validator: (value) {
         if (value == null || value.isEmpty) {
@@ -58,23 +60,47 @@ class _LoginScreenState extends State<LoginScreen> {
                   ),
                   SizedBox(height: 30),
                   ElevatedButton(
-                    onPressed: () {
+                    onPressed: () async {
                       // Navigator.of(context).pushReplacement(
                       //   MaterialPageRoute(builder: (context) => ChatsPage()),
                       // );
 
                       if (_formKey.currentState!.validate()) {
-                        username = _usernameController.text;
-                        password = _passwordController.text;
+                        final username = _usernameController.text.trim();
+                        final password = _passwordController.text.trim();
+
+                        final success = await ApiService().createUser(
+                          username,
+                          password,
+                        );
+
+                        if (!mounted) return;
+
+                        if (success) {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(
+                              content: Text('User created successfully'),
+                            ),
+                          );
+                          Navigator.of(context).pushReplacement(
+                            MaterialPageRoute(builder: (_) => ChatsPage()),
+                          );
+                        } else {
+                          ScaffoldMessenger.of(context).showSnackBar(
+                            SnackBar(content: Text('Failed to create user')),
+                          );
+                        }
 
                         print('Username: ${_usernameController.text}');
                         print('Password: ${_passwordController.text}');
-                        ScaffoldMessenger.of(context).showSnackBar(
-                          SnackBar(content: Text('User Verified')),
-                        );
                       }
                     },
-                    child: Text('Log In'),
+                    child: Text('Sign Up'),
+                  ),
+
+                  TextButton(
+                    onPressed: () {},
+                    child: Text('Already have an account, Log In'),
                   ),
                 ],
               ),

@@ -8,6 +8,24 @@ class ApiService {
   // static const String baseUrl = "http://10.0.2.2:5000";  // Android
   static const String baseUrl = "http://127.0.0.1:5000"; // iOS
 
+  // Create new users
+  // Future<User> createUser(String username, String password) async {
+  Future<bool> createUser(String username, String password) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/users"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({'username': username, 'password': password}),
+    );
+
+    if (response.statusCode == 201) {
+      // return User.fromJson(jsonDecode(response.body));
+      return true;
+    } else {
+      // throw Exception('Failed to create user');
+      return false;
+    }
+  }
+
   // Fetch list of chats in database
   Future<List<Chat>> fetchChats() async {
     final response = await http.get(Uri.parse("$baseUrl/chats"));
@@ -33,7 +51,11 @@ class ApiService {
     await http.post(
       Uri.parse("$baseUrl/messages"),
       headers: {"Content-Type": "application/json"},
-      body: {"chat_id": chatId, "sender_id": senderId, "content": content},
+      body: jsonEncode({
+        "chat_id": chatId,
+        "sender_id": senderId,
+        "content": content,
+      }),
     );
   }
 }

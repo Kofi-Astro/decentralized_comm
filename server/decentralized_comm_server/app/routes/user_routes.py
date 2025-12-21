@@ -22,7 +22,12 @@ def create_user():
     db.session.add(new_user)
     db.session.commit()
 
-    return jsonify({"message": "User created successfully"}), 201
+    return jsonify({
+        "id"        : new_user.id,
+        "username"  : new_user.username,
+        "created_at": new_user.created_at.isoformat(),
+
+    }), 201
 
 
 @user_bp.route("/users", methods=["GET"])
