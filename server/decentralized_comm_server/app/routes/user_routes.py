@@ -4,7 +4,7 @@ from app.models.user import User
 
 user_bp = Blueprint('user', __name__)
 
-@user_bp.route("/users", methods=["POST"])
+@user_bp.route("/auth/register", methods=["POST"])
 def create_user():
     data = request.get_json()
 
@@ -59,3 +59,22 @@ def get_user(user_id):
         "username"  : user.username,
         "created_at": user.created_at.isoformat()
     })
+
+
+@user_bp.route("/auth/login", methods = ["POST"])
+def login_user():
+    data = request.get_json()
+
+    if not data or "username" not in data or "password" not in data:
+        return jsonify({"error":"username and password required"}), 400
+
+    user = User.query.filter_by(username=data["username"]).first()
+
+    if not user or user.password != data["password"]:
+        return jsonify({"error":"Invalid credentials"}), 400
+
+    return jsonify({
+        "id"      : user.id,
+        "username": user.username,
+        "created_at":user.created_at,
+    }),200

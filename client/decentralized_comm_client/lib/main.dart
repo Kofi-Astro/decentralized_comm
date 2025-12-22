@@ -1,19 +1,26 @@
+import 'package:decentralized_comm_client/screen/chats.dart';
 import 'package:decentralized_comm_client/screen/login.dart';
+import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  // await Env.load();
-  runApp(const MyApp());
+
+  final user = await LocalUserService.getUser();
+
+  runApp(MyApp(isLoggedIn: user != null));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final bool isLoggedIn;
+  const MyApp({super.key, required this.isLoggedIn});
 
   // This widget is the root of your application.
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(title: 'Flutter Demo', home: LoginScreen());
+    return MaterialApp(
+      title: 'Flutter Demo',
+      home: isLoggedIn ? ChatsPage() : LoginScreen(),
+    );
   }
 }

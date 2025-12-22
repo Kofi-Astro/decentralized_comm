@@ -1,3 +1,5 @@
+import 'package:decentralized_comm_client/screen/login.dart';
+import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
@@ -34,7 +36,22 @@ class _ChatsPageState extends State<ChatsPage> {
       child: Scaffold(
         appBar: AppBar(
           title: Text('Chats'),
-          backgroundColor: const Color.fromARGB(255, 47, 67, 126),
+          backgroundColor: const Color.fromARGB(255, 82, 104, 169),
+          actions: [
+            IconButton(
+              onPressed: () async {
+                await LocalUserService.clear();
+                if (!context.mounted) return;
+                Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(
+                    builder: (BuildContext context) => LoginScreen(),
+                  ),
+                  (route) => false,
+                );
+              },
+              icon: Icon(Icons.logout_outlined),
+            ),
+          ],
         ),
         // body: ListView.builder(itemBuilder: _chatListItem, itemCount: 10),
         body: ListView(

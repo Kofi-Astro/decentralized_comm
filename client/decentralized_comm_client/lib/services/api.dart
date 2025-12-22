@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 import 'dart:convert';
 import '../models/chat.dart';
@@ -12,7 +13,7 @@ class ApiService {
   // Future<User> createUser(String username, String password) async {
   Future<bool> createUser(String username, String password) async {
     final response = await http.post(
-      Uri.parse("$baseUrl/users"),
+      Uri.parse("$baseUrl/auth/register"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({'username': username, 'password': password}),
     );
@@ -23,6 +24,23 @@ class ApiService {
     } else {
       // throw Exception('Failed to create user');
       return false;
+    }
+  }
+
+  Future<User> loginUser(String username, String password) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/auth/login"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({'username': username, 'password': password}),
+    );
+
+    debugPrint("LOGIN STATUS: ${response.statusCode}");
+    debugPrint("LOGIN BODY: ${response.body}");
+
+    if (response.statusCode == 200) {
+      return User.fromJson(jsonDecode(response.body));
+    } else {
+      throw Exception('Failed to log in user');
     }
   }
 
