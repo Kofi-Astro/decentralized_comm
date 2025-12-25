@@ -9,6 +9,7 @@ class ApiService {
   // static const String baseUrl = "http://10.0.2.2:5000";  // Android
   static const String baseUrl = "http://127.0.0.1:5000"; // iOS
 
+  // ######### USER RELATED API SERVICES ##############
   // Create new users
   // Future<User> createUser(String username, String password) async {
   Future<bool> createUser(String username, String password) async {
@@ -44,14 +45,19 @@ class ApiService {
     }
   }
 
-  // Fetch list of chats in database
-  Future<List<Chat>> fetchChats() async {
-    final response = await http.get(Uri.parse("$baseUrl/chats"));
+  // ##############   CHATS RELATED API SERVICES ################
+  // Fetch list of chats for current user
+  Future<List<Chat>> fetchChats(int userId) async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/chats?user_id=$userId"),
+    );
 
     final List data = jsonDecode(response.body);
 
     return data.map((e) => Chat.fromJson(e)).toList();
   }
+
+  // Load chat
 
   // Fetch list of messages in database
   Future<List<Message>> fetchMessages(int chatId) async {

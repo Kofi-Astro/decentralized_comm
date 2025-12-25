@@ -3,6 +3,7 @@ import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
 
+import '../models/chat.dart';
 import '../screen/chatroom.dart';
 import '../services/api.dart';
 
@@ -14,6 +15,20 @@ class ChatsPage extends StatefulWidget {
 }
 
 class _ChatsPageState extends State<ChatsPage> {
+  late Future<List<Chat>> _chatsFuture;
+
+  @override
+  void initState() {
+    super.initState();
+    initChats();
+  }
+
+  Future<void> initChats() async {
+    final user = await LocalUserService.getUser();
+    _chatsFuture = ApiService().fetchChats(user!.id);
+    setState(() {});
+  }
+
   @override
   int index = 0;
 
