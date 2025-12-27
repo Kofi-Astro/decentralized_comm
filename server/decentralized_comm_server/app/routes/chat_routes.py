@@ -32,7 +32,7 @@ def get_chats():
     if not user_id:
         return jsonify({"error":"user_id required"}), 400
 
-    chats = Chat.query.filter(owner_id=user_id).all();
+    chats = Chat.query.filter_by(owner_id=user_id).all();
 
 
     return jsonify([

@@ -1,14 +1,17 @@
 import 'package:decentralized_comm_client/screen/login.dart';
 import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../models/chat.dart';
 import '../screen/chatroom.dart';
 import '../services/api.dart';
+import '../shared/pages/contacts.dart';
+
+enum PopUpList { newChat, logout, settings }
 
 class ChatsPage extends StatefulWidget {
-  const ChatsPage({super.key});
+  final int userId;
+  const ChatsPage({super.key, required this.userId});
 
   @override
   State<ChatsPage> createState() => _ChatsPageState();
@@ -20,7 +23,13 @@ class _ChatsPageState extends State<ChatsPage> {
   @override
   void initState() {
     super.initState();
-    initChats();
+    // initChats();
+    _chatsFuture = _loadChats();
+  }
+
+  Future<List<Chat>> _loadChats() async {
+    final user = await LocalUserService.getUser();
+    return ApiService().fetchChats(user!.id);
   }
 
   Future<void> initChats() async {
@@ -29,8 +38,60 @@ class _ChatsPageState extends State<ChatsPage> {
     setState(() {});
   }
 
+  Widget _buildChatList() {
+    return FutureBuilder<List<Chat>>(
+      future: _chatsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const Center(child: CircularProgressIndicator());
+        }
+
+        if (snapshot.hasError) {
+          return Center(child: Text('Error: ${snapshot.error}'));
+        }
+
+        final chats = snapshot.data;
+        if (chats == null || chats.isEmpty) {
+          return Center(child: Text('No chats found. Begin a chat....'));
+        }
+
+        return ListView.builder(
+          itemCount: chats.length,
+          itemBuilder: (context, index) {
+            final chat = chats[index];
+            return _buildListTile(chat.name);
+          },
+        );
+      },
+    );
+  }
+
   @override
   int index = 0;
+  PopUpList? selectedItem;
+  bool isChatEmpty = true;
+
+  // Future<Widget> _buildChatList() async {
+  //   final List<Chat> chats = await ApiService().fetchChats(widget.userId);
+  //   return isChatEmpty
+  //       ? Center(child: Text('No chats found. Begin a chat.....'))
+  //       :
+  //         // ListView(
+  //         //     children: [
+  //         //       _buildListTile('Kelvin'),
+  //         //       _buildListTile('Astro'),
+  //         //       _buildListTile('Captain'),
+  //         //     ],
+  //         //   );
+  //         ListView.builder(
+  //           itemCount: chats.length,
+  //           itemBuilder: (BuildContext contex, int index) {
+  //             return _buildListTile(
+  //               chats.firstWhere(context as bool Function(Chat element)).name,
+  //             );
+  //           },
+  //         );
+  // }
 
   Widget _buildListTile(String name) {
     return ListTile(
@@ -46,6 +107,16 @@ class _ChatsPageState extends State<ChatsPage> {
     );
   }
 
+  PopupMenuItem<PopUpList> _popUpMenuItem({
+    required BuildContext ctx,
+    required String label,
+    required Function() onTap,
+    required PopUpList value,
+  }) {
+    return PopupMenuItem(value: value, onTap: onTap, child: Text(label));
+  }
+
+  @override
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
@@ -53,29 +124,46 @@ class _ChatsPageState extends State<ChatsPage> {
           title: Text('Chats'),
           backgroundColor: const Color.fromARGB(255, 82, 104, 169),
           actions: [
-            IconButton(
-              onPressed: () async {
-                await LocalUserService.clear();
-                if (!context.mounted) return;
-                Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(
-                    builder: (BuildContext context) => LoginScreen(),
-                  ),
-                  (route) => false,
-                );
+            PopupMenuButton<PopUpList>(
+              icon: Icon(Icons.more_vert),
+              initialValue: selectedItem,
+              onSelected: (PopUpList item) {
+                setState(() {
+                  selectedItem = item;
+                });
               },
-              icon: Icon(Icons.logout_outlined),
+              itemBuilder: (context) => <PopupMenuEntry<PopUpList>>[
+                _popUpMenuItem(
+                  value: PopUpList.newChat,
+                  ctx: context,
+                  label: 'New Chat',
+                  onTap: () => Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (BuildContext context) => ContactsPage(),
+                    ),
+                  ),
+                ),
+                _popUpMenuItem(
+                  value: PopUpList.logout,
+                  ctx: context,
+                  label: 'Logout',
+                  onTap: () async {
+                    await LocalUserService.clear();
+                    if (!context.mounted) return;
+                    Navigator.of(context).pushAndRemoveUntil(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => LoginScreen(),
+                      ),
+                      (route) => false,
+                    );
+                  },
+                ),
+              ],
             ),
           ],
         ),
         // body: ListView.builder(itemBuilder: _chatListItem, itemCount: 10),
-        body: ListView(
-          children: [
-            _buildListTile('Kelvin'),
-            _buildListTile('Astro'),
-            _buildListTile('Captain'),
-          ],
-        ),
+        body: _buildChatList(),
       ),
     );
   }

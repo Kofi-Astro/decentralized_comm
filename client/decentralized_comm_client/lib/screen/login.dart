@@ -90,7 +90,8 @@ class _LoginScreenState extends State<LoginScreen> {
                             if (!mounted) return;
                             Navigator.of(context).pushReplacement(
                               MaterialPageRoute(
-                                builder: (BuildContext context) => ChatsPage(),
+                                builder: (BuildContext context) =>
+                                    ChatsPage(userId: user.id),
                               ),
                             );
                           } else {
@@ -108,7 +109,9 @@ class _LoginScreenState extends State<LoginScreen> {
                             await LocalUserService.saveUser(user);
                             if (!mounted) return;
                             Navigator.of(context).pushReplacement(
-                              MaterialPageRoute(builder: (_) => ChatsPage()),
+                              MaterialPageRoute(
+                                builder: (_) => ChatsPage(userId: user.id),
+                              ),
                             );
                           } catch (e) {
                             if (!mounted) return;
