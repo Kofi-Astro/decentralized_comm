@@ -45,6 +45,17 @@ class ApiService {
     }
   }
 
+  Future<List<User>> getUsers() async {
+    final response = await http.get(
+      Uri.parse("$baseUrl/users"),
+      headers: {"Content-Type": "application/json"},
+    );
+    final List users = jsonDecode(response.body);
+
+    // if(response.statusCode == )
+    return users.map((e) => User.fromJson(e)).toList();
+  }
+
   // ##############   CHATS RELATED API SERVICES ################
   // Fetch list of chats for current user
   Future<List<Chat>> fetchChats(int userId) async {
