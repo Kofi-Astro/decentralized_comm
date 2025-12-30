@@ -3,8 +3,6 @@ import 'package:decentralized_comm_client/screen/login.dart';
 import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
 
-import 'models/user.dart';
-
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
 

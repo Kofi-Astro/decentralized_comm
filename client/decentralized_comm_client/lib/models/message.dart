@@ -1,7 +1,7 @@
 class Message {
   final int id;
   final int chatId;
-  final senderId;
+  final int senderId;
   final String content;
   final String createdAt;
 

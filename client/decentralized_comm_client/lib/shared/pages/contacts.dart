@@ -1,6 +1,8 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:decentralized_comm_client/screen/chatroom.dart';
+import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
-import 'package:http/http.dart' as http;
 
 import '../../models/user.dart';
 import '../../services/api.dart';
@@ -47,12 +49,54 @@ class _ContactsPageState extends State<ContactsPage> {
             final user = users[index];
             return ListTile(
               leading: Text(user.username),
-              onTap: () {
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => ChatRoomPage(name: user.username),
-                  ),
-                );
+              // onTap: () async {
+              //   final currentUser = await LocalUserService.getUser();
+
+              //   final chat = await ApiService().createOrFetchChats([
+              //     currentUser!.id,
+              //     user.id,
+              //   ]);
+
+              //   if (!mounted) return;
+
+              //   Navigator.of(context).push(
+              //     MaterialPageRoute(
+              //       builder: (context) =>
+              //           ChatRoomPage(title: user.username, chat: chat.id),
+              //     ),
+              //   );
+
+              //   Navigator.pop(context, true);
+              // },
+              onTap: () async {
+                try {
+                  final currentUser = await LocalUserService.getUser();
+
+                  if (currentUser!.id == user.id) return;
+
+                  final chat = await ApiService().createOrFetchChats([
+                    currentUser.id,
+                    user.id,
+                  ]);
+
+                  if (!mounted) return;
+
+                  // 1️⃣ Navigate to chatroom
+                  await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => ChatRoomPage(
+                        chat: chat.id,
+                        title: chat.recipientUsername ?? "Chat",
+                      ),
+                    ),
+                  );
+
+                  // 2️⃣ Tell ChatsPage to refresh
+                  Navigator.pop(context, true);
+                } catch (e) {
+                  debugPrint("CHAT CREATE ERROR: $e");
+                }
               },
             );
           },

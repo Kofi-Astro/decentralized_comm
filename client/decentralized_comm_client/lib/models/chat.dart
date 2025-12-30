@@ -1,27 +1,27 @@
 class Chat {
   final int id;
-  final String name;
   final bool isGroup;
-  final int ownerId;
+  final int? recipientId;
+  final String? recipientUsername;
 
   Chat({
     required this.id,
-    required this.name,
     required this.isGroup,
-    required this.ownerId,
+    required this.recipientId,
+    required this.recipientUsername,
   });
 
   factory Chat.fromJson(Map<String, dynamic> json) => Chat(
     id: json['id'],
-    name: json['name'],
     isGroup: json['is_group'],
-    ownerId: json['owner_id'],
+    recipientId: json['recipient']?['id'],
+    recipientUsername: json['recipient']?['username'],
   );
 
   Map<String, dynamic> toJson() => {
     "id": id,
-    "name": name,
     "is_group": isGroup,
-    "owner_id": ownerId,
+    "recipientId": recipientId,
+    "recipientUsername": recipientUsername,
   };
 }

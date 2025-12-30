@@ -6,9 +6,9 @@ class Chat(db.Model):
     __tablename__ = "chats"
 
     id       = db.Column(db.Integer, primary_key=True)
-    name     = db.Column(db.String(100), nullable=False)
+    # name     = db.Column(db.String(100), nullable=False)
     is_group = db.Column(db.Boolean, default = False)
-    owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
+    # owner_id = db.Column(db.Integer, db.ForeignKey("users.id"), nullable=False)
     created_at = db.Column(db.DateTime(timezone = True), server_default = func.now())
 
     messages = db.relationship("Message", backref= "chat", lazy = True)
@@ -16,3 +16,12 @@ class Chat(db.Model):
 
     def __repr__(self):
         return f"<Chat {self.id} owner={self.owner_id}>"
+
+
+
+
+class ChatParticipant(db.Model):
+    __tablename__ = "chat_participant"
+
+    chat_id = db.Column(db.Integer, db.ForeignKey("chats.id"), primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey("users.id"), primary_key=True)

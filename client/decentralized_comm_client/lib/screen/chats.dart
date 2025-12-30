@@ -59,49 +59,36 @@ class _ChatsPageState extends State<ChatsPage> {
           itemCount: chats.length,
           itemBuilder: (context, index) {
             final chat = chats[index];
-            return _buildListTile(chat.name);
+            return _buildListTile(chat);
           },
         );
       },
     );
   }
 
-  @override
   int index = 0;
   PopUpList? selectedItem;
   bool isChatEmpty = true;
 
-  // Future<Widget> _buildChatList() async {
-  //   final List<Chat> chats = await ApiService().fetchChats(widget.userId);
-  //   return isChatEmpty
-  //       ? Center(child: Text('No chats found. Begin a chat.....'))
-  //       :
-  //         // ListView(
-  //         //     children: [
-  //         //       _buildListTile('Kelvin'),
-  //         //       _buildListTile('Astro'),
-  //         //       _buildListTile('Captain'),
-  //         //     ],
-  //         //   );
-  //         ListView.builder(
-  //           itemCount: chats.length,
-  //           itemBuilder: (BuildContext contex, int index) {
-  //             return _buildListTile(
-  //               chats.firstWhere(context as bool Function(Chat element)).name,
-  //             );
-  //           },
-  //         );
-  // }
-
-  Widget _buildListTile(String name) {
+  Widget _buildListTile(Chat chat) {
     return ListTile(
       leading: CircleAvatar(),
-      title: Text(name),
-      subtitle: Text("I'm gonna be there soon"),
+      title: Text(
+        chat.recipientUsername ??
+            (chat.isGroup ? 'Group Chat' : 'Unknown User'),
+      ),
+      subtitle: Text("Tap to open"),
       trailing: Column(children: [Text('00:00'), Text('2')]),
       onTap: () {
         Navigator.of(context).push(
-          MaterialPageRoute(builder: (context) => ChatRoomPage(name: name)),
+          MaterialPageRoute(
+            builder: (context) => ChatRoomPage(
+              title:
+                  chat.recipientUsername ??
+                  (chat.isGroup ? 'Group Chat' : 'Unknown User'),
+              chat: chat.id,
+            ),
+          ),
         );
       },
     );
@@ -137,11 +124,16 @@ class _ChatsPageState extends State<ChatsPage> {
                   value: PopUpList.newChat,
                   ctx: context,
                   label: 'New Chat',
-                  onTap: () => Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (BuildContext context) => ContactsPage(),
-                    ),
-                  ),
+                  onTap: () async {
+                    final shouldRefresh = await Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (BuildContext context) => ContactsPage(),
+                      ),
+                    );
+                    if (shouldRefresh == true) {
+                      await initChats();
+                    }
+                  },
                 ),
                 _popUpMenuItem(
                   value: PopUpList.logout,
@@ -162,7 +154,6 @@ class _ChatsPageState extends State<ChatsPage> {
             ),
           ],
         ),
-        // body: ListView.builder(itemBuilder: _chatListItem, itemCount: 10),
         body: _buildChatList(),
       ),
     );

@@ -57,6 +57,23 @@ class ApiService {
   }
 
   // ##############   CHATS RELATED API SERVICES ################
+
+  Future<Chat> createOrFetchChats(List<int> userIds) async {
+    final response = await http.post(
+      Uri.parse("$baseUrl/chats"),
+      headers: {"Content-Type": "application/json"},
+      body: jsonEncode({"user_ids": userIds}),
+    );
+
+    if (response.statusCode != 200 && response.statusCode != 201) {
+      throw Exception(
+        "Failed to create chat (${response.statusCode}): ${response.body}",
+      );
+    }
+
+    return Chat.fromJson(jsonDecode(response.body));
+  }
+
   // Fetch list of chats for current user
   Future<List<Chat>> fetchChats(int userId) async {
     final response = await http.get(

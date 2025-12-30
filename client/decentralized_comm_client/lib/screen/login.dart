@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'package:decentralized_comm_client/screen/chats.dart';
 import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
