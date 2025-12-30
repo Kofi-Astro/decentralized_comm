@@ -86,7 +86,7 @@ class _ContactsPageState extends State<ContactsPage> {
                     context,
                     MaterialPageRoute(
                       builder: (_) => ChatRoomPage(
-                        chat: chat.id,
+                        chatId: chat.id,
                         title: chat.recipientUsername ?? "Chat",
                       ),
                     ),

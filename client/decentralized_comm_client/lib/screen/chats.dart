@@ -10,8 +10,8 @@ import '../shared/pages/contacts.dart';
 enum PopUpList { newChat, logout, settings }
 
 class ChatsPage extends StatefulWidget {
-  final int userId;
-  const ChatsPage({super.key, required this.userId});
+  // final int userId;
+  const ChatsPage({super.key});
 
   @override
   State<ChatsPage> createState() => _ChatsPageState();
@@ -25,6 +25,12 @@ class _ChatsPageState extends State<ChatsPage> {
     super.initState();
     // initChats();
     _chatsFuture = _loadChats();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    initChats();
   }
 
   Future<List<Chat>> _loadChats() async {
@@ -86,7 +92,7 @@ class _ChatsPageState extends State<ChatsPage> {
               title:
                   chat.recipientUsername ??
                   (chat.isGroup ? 'Group Chat' : 'Unknown User'),
-              chat: chat.id,
+              chatId: chat.id,
             ),
           ),
         );
