@@ -10,8 +10,8 @@ class ApiService {
   static const String baseUrl = "http://127.0.0.1:5000"; // iOS
 
   // ######### USER RELATED API SERVICES ##############
+
   // Create new users
-  // Future<User> createUser(String username, String password) async {
   Future<bool> createUser(String username, String password) async {
     final response = await http.post(
       Uri.parse("$baseUrl/auth/register"),
@@ -20,14 +20,13 @@ class ApiService {
     );
 
     if (response.statusCode == 201) {
-      // return User.fromJson(jsonDecode(response.body));
       return true;
     } else {
-      // throw Exception('Failed to create user');
       return false;
     }
   }
 
+  // Sign in an existing user
   Future<User> loginUser(String username, String password) async {
     final response = await http.post(
       Uri.parse("$baseUrl/auth/login"),
@@ -45,6 +44,7 @@ class ApiService {
     }
   }
 
+  // Fetch all registered users in the database
   Future<List<User>> getUsers() async {
     final response = await http.get(
       Uri.parse("$baseUrl/users"),
@@ -52,12 +52,12 @@ class ApiService {
     );
     final List users = jsonDecode(response.body);
 
-    // if(response.statusCode == )
     return users.map((e) => User.fromJson(e)).toList();
   }
 
   // ##############   CHATS RELATED API SERVICES ################
 
+  // Creating a new chat or fetching one if it already exist
   Future<Chat> createOrFetchChats(List<int> userIds) async {
     final response = await http.post(
       Uri.parse("$baseUrl/chats"),
@@ -85,9 +85,9 @@ class ApiService {
     return data.map((e) => Chat.fromJson(e)).toList();
   }
 
-  // Load chat
+  // ##################### MESSAGES RELATED API SERVICES ############################
 
-  // Fetch list of messages in database
+  // Fetch list of messages in database for a particular chat
   Future<List<Message>> fetchMessages(int chatId) async {
     final response = await http.get(Uri.parse("$baseUrl/messages/$chatId"));
     final List data = jsonDecode(response.body);
@@ -95,6 +95,7 @@ class ApiService {
     return data.map((e) => Message.fromJson(e)).toList();
   }
 
+  // Send messages in a particular chat between two participants
   Future<void> sendMessage({
     required int chatId,
     required int senderId,

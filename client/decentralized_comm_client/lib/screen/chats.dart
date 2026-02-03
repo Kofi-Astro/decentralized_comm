@@ -1,16 +1,18 @@
-import 'package:decentralized_comm_client/screen/login.dart';
-import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
 
 import '../models/chat.dart';
+
+import '../screen/login.dart';
 import '../screen/chatroom.dart';
+
+import '../services/local_user.dart';
 import '../services/api.dart';
+
 import '../shared/pages/contacts.dart';
 
 enum PopUpList { newChat, logout, settings }
 
 class ChatsPage extends StatefulWidget {
-  // final int userId;
   const ChatsPage({super.key});
 
   @override
@@ -23,25 +25,14 @@ class _ChatsPageState extends State<ChatsPage> {
   @override
   void initState() {
     super.initState();
-    // initChats();
-    _chatsFuture = _loadChats();
+    _refreshChats();
   }
 
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    initChats();
-  }
-
-  Future<List<Chat>> _loadChats() async {
+  Future<void> _refreshChats() async {
     final user = await LocalUserService.getUser();
-    return ApiService().fetchChats(user!.id);
-  }
-
-  Future<void> initChats() async {
-    final user = await LocalUserService.getUser();
-    _chatsFuture = ApiService().fetchChats(user!.id);
-    setState(() {});
+    setState(() {
+      _chatsFuture = ApiService().fetchChats(user!.id);
+    });
   }
 
   Widget _buildChatList() {
@@ -137,7 +128,7 @@ class _ChatsPageState extends State<ChatsPage> {
                       ),
                     );
                     if (shouldRefresh == true) {
-                      await initChats();
+                      await _refreshChats();
                     }
                   },
                 ),

@@ -31,6 +31,4 @@ class LocalUserService {
     final prefs = await SharedPreferences.getInstance();
     await prefs.clear();
   }
-
-  // ############### LOCAL SERVICES OF CHATS #################
 }

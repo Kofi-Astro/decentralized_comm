@@ -1,9 +1,7 @@
-// ignore_for_file: use_build_context_synchronously
-
-import 'package:decentralized_comm_client/screen/chats.dart';
-import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
 
+import '../screen/chats.dart';
+import '../services/local_user.dart';
 import '../services/api.dart';
 
 class LoginScreen extends StatefulWidget {
@@ -16,6 +14,7 @@ class LoginScreen extends StatefulWidget {
 class _LoginScreenState extends State<LoginScreen> {
   final TextEditingController _usernameController = TextEditingController();
   final TextEditingController _passwordController = TextEditingController();
+
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   bool _haveAccount = false;
@@ -82,13 +81,6 @@ class _LoginScreenState extends State<LoginScreen> {
                             );
                             await LocalUserService.saveUser(user);
 
-                            if (!mounted) return;
-
-                            ScaffoldMessenger.of(context).showSnackBar(
-                              SnackBar(
-                                content: Text('User created successfully'),
-                              ),
-                            );
                             if (!mounted) return;
                             Navigator.of(context).pushAndRemoveUntil(
                               MaterialPageRoute(
