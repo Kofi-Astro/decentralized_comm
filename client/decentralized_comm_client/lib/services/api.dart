@@ -7,7 +7,8 @@ import '../models/user.dart';
 
 class ApiService {
   // static const String baseUrl = "http://10.0.2.2:5000";  // Android
-  static const String baseUrl = "http://127.0.0.1:5000"; // iOS
+  // static const String baseUrl = "http://127.0.0.1:5000"; // iOS
+  static const String baseUrl = "http://192.168.0.50:5000"; //
 
   // ######### USER RELATED API SERVICES ##############
 
