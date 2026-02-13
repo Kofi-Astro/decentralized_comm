@@ -1,11 +1,13 @@
 // ignore_for_file: use_build_context_synchronously
 
-import 'package:decentralized_comm_client/screen/chatroom.dart';
-import 'package:decentralized_comm_client/services/local_user.dart';
 import 'package:flutter/material.dart';
 
 import '../../models/user.dart';
+
 import '../../services/api.dart';
+import '../../services/local_user.dart';
+
+import '../../screen/chatroom.dart';
 
 class ContactsPage extends StatefulWidget {
   const ContactsPage({super.key});
@@ -47,57 +49,44 @@ class _ContactsPageState extends State<ContactsPage> {
           itemCount: users.length,
           itemBuilder: (context, index) {
             final user = users[index];
-            return ListTile(
-              leading: Text(user.username),
-              // onTap: () async {
-              //   final currentUser = await LocalUserService.getUser();
+            return Column(
+              children: [
+                ListTile(
+                  leading: Text(user.username, style: TextStyle(fontSize: 20)),
 
-              //   final chat = await ApiService().createOrFetchChats([
-              //     currentUser!.id,
-              //     user.id,
-              //   ]);
+                  onTap: () async {
+                    try {
+                      final currentUser = await LocalUserService.getUser();
 
-              //   if (!mounted) return;
+                      if (currentUser!.id == user.id) return;
 
-              //   Navigator.of(context).push(
-              //     MaterialPageRoute(
-              //       builder: (context) =>
-              //           ChatRoomPage(title: user.username, chat: chat.id),
-              //     ),
-              //   );
+                      final chat = await ApiService().createOrFetchChats([
+                        currentUser.id,
+                        user.id,
+                      ]);
 
-              //   Navigator.pop(context, true);
-              // },
-              onTap: () async {
-                try {
-                  final currentUser = await LocalUserService.getUser();
+                      if (!mounted) return;
 
-                  if (currentUser!.id == user.id) return;
+                      // 1️⃣ Navigate to chatroom
+                      await Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (_) => ChatRoomPage(
+                            chatId: chat.id,
+                            title: chat.recipientUsername ?? "Chat",
+                          ),
+                        ),
+                      );
 
-                  final chat = await ApiService().createOrFetchChats([
-                    currentUser.id,
-                    user.id,
-                  ]);
-
-                  if (!mounted) return;
-
-                  // 1️⃣ Navigate to chatroom
-                  await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (_) => ChatRoomPage(
-                        chatId: chat.id,
-                        title: chat.recipientUsername ?? "Chat",
-                      ),
-                    ),
-                  );
-
-                  // 2️⃣ Tell ChatsPage to refresh
-                  Navigator.pop(context, true);
-                } catch (e) {
-                  debugPrint("CHAT CREATE ERROR: $e");
-                }
-              },
+                      // 2️⃣ Tell ChatsPage to refresh
+                      Navigator.pop(context, true);
+                    } catch (e) {
+                      debugPrint("CHAT CREATE ERROR: $e");
+                    }
+                  },
+                ),
+                Divider(),
+              ],
             );
           },
         );

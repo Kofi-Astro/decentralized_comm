@@ -17,7 +17,6 @@ class ChatRoomPage extends StatefulWidget {
 }
 
 class _ChatRoomPageState extends State<ChatRoomPage> {
-  // late Future<List<Message>> _messagesFuture;
   List<Message> _messages = [];
   bool _loading = true;
   Timer? _pollingTimer;
@@ -43,12 +42,6 @@ class _ChatRoomPageState extends State<ChatRoomPage> {
         _refreshMessages();
       }
     });
-
-    // final messages = await ApiService().fetchMessages(widget.chatId);
-    // setState(() {
-    //   _messages = messages;
-    //   _loading = false;
-    // });
   }
 
   Future<void> _refreshMessages() async {

@@ -8,15 +8,15 @@ class LocalUserService {
 
   // ####### LOCAL SERVICE OF USER ################
   static Future<void> saveUser(User user) async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.setInt(_userIdKey, user.id);
-    await prefs.setString(_usernameKey, user.username);
+    final pref = await SharedPreferences.getInstance();
+    await pref.setInt(_userIdKey, user.id);
+    await pref.setString(_usernameKey, user.username);
   }
 
   static Future<User?> getUser() async {
-    final prefs = await SharedPreferences.getInstance();
-    final id = prefs.getInt(_userIdKey);
-    final username = prefs.getString(_usernameKey);
+    final pref = await SharedPreferences.getInstance();
+    final id = pref.getInt(_userIdKey);
+    final username = pref.getString(_usernameKey);
 
     if (id == null || username == null) return null;
 
@@ -28,7 +28,7 @@ class LocalUserService {
   }
 
   static Future<void> clear() async {
-    final prefs = await SharedPreferences.getInstance();
-    await prefs.clear();
+    final pref = await SharedPreferences.getInstance();
+    await pref.clear();
   }
 }

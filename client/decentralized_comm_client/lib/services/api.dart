@@ -1,6 +1,9 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:http/http.dart' as http;
-import 'dart:convert';
+
+// import '../core/config/api_routes.dart' as apiService;
 import '../models/chat.dart';
 import '../models/message.dart';
 import '../models/user.dart';
@@ -9,6 +12,10 @@ class ApiService {
   // static const String baseUrl = "http://10.0.2.2:5000";  // Android
   // static const String baseUrl = "http://127.0.0.1:5000"; // iOS
   static const String baseUrl = "http://192.168.0.50:5000"; //
+
+  // static const String baseUrl = apiService.ApiRoutes.baseUrl;
+
+  // static const String login = apiService.ApiRoutes.login;
 
   // ######### USER RELATED API SERVICES ##############
 
@@ -30,7 +37,7 @@ class ApiService {
   // Sign in an existing user
   Future<User> loginUser(String username, String password) async {
     final response = await http.post(
-      Uri.parse("$baseUrl/auth/login"),
+      Uri.parse("$baseUrl/auth/login}"),
       headers: {"Content-Type": "application/json"},
       body: jsonEncode({'username': username, 'password': password}),
     );

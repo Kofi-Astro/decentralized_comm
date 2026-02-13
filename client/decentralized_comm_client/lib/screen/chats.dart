@@ -56,7 +56,7 @@ class _ChatsPageState extends State<ChatsPage> {
           itemCount: chats.length,
           itemBuilder: (context, index) {
             final chat = chats[index];
-            return _buildListTile(chat);
+            return Column(children: [_buildListTile(chat), Divider()]);
           },
         );
       },
@@ -69,12 +69,15 @@ class _ChatsPageState extends State<ChatsPage> {
 
   Widget _buildListTile(Chat chat) {
     return ListTile(
-      leading: CircleAvatar(),
+      leading: CircleAvatar(
+        backgroundImage: AssetImage('assets/images/img.jpeg'),
+      ),
       title: Text(
         chat.recipientUsername ??
             (chat.isGroup ? 'Group Chat' : 'Unknown User'),
       ),
       subtitle: Text("Tap to open"),
+
       trailing: Column(children: [Text('00:00'), Text('2')]),
       onTap: () {
         Navigator.of(context).push(
